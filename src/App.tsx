@@ -1,17 +1,22 @@
 import React from "react";
 import { RecoilRoot } from "recoil";
+import { AppProvider, Page } from "@shopify/polaris";
+
+import enTranslations from "@shopify/polaris/locales/en.json";
 
 import { TodoList } from "components";
 
-import "./App.scss";
+import "@shopify/polaris/dist/styles.css";
 
 function App() {
   return (
-    <RecoilRoot>
-      <div className="App">
-        <TodoList />
-      </div>
-    </RecoilRoot>
+    <AppProvider i18n={enTranslations}>
+      <Page fullWidth title="Recoil Demo">
+        <RecoilRoot>
+          <TodoList />
+        </RecoilRoot>
+      </Page>
+    </AppProvider>
   );
 }
 

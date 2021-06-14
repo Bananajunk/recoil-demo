@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSetRecoilState } from "recoil";
+import { Button, TextField, Stack } from "@shopify/polaris";
 
 import { todoListState } from "atoms";
 import { generateId } from "utilities";
@@ -20,15 +21,22 @@ const TodoCreator = () => {
     setInputValue("");
   };
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.currentTarget.value);
+  const onChange = (value: string) => {
+    setInputValue(value);
   };
 
   return (
-    <div>
-      <input type="text" value={inputValue} onChange={onChange} />
-      <button onClick={addItem}>Add</button>
-    </div>
+    <Stack>
+      <TextField
+        label="Add Item"
+        value={inputValue}
+        onChange={onChange}
+        labelHidden
+      />
+      <Button primary onClick={addItem}>
+        Add
+      </Button>
+    </Stack>
   );
 };
 

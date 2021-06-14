@@ -3,31 +3,32 @@ import { useRecoilState } from "recoil";
 
 import { todoListFilterState } from "atoms";
 import * as Types from "types";
+import { Select } from "@shopify/polaris";
 
 const TodoListFilters = () => {
   const [filter, setFilter] = useRecoilState(todoListFilterState);
 
-  const updateFilter = ({
-    target: { value },
-  }: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectChange = (value: string) =>
     setFilter(value as Types.TodoListFilter);
-  };
 
   return (
-    <>
-      Filter:
-      <select value={filter} onChange={updateFilter}>
-        <option value={Types.TodoListFilter.All}>
-          {Types.TodoListFilter.All}
-        </option>
-        <option value={Types.TodoListFilter.Completed}>
-          {Types.TodoListFilter.Completed}
-        </option>
-        <option value={Types.TodoListFilter.Incomplete}>
-          {Types.TodoListFilter.Incomplete}
-        </option>
-      </select>
-    </>
+    <Select
+      label="Filter"
+      labelInline
+      options={[
+        { label: Types.TodoListFilter.All, value: Types.TodoListFilter.All },
+        {
+          label: Types.TodoListFilter.Completed,
+          value: Types.TodoListFilter.Completed,
+        },
+        {
+          label: Types.TodoListFilter.Incomplete,
+          value: Types.TodoListFilter.Incomplete,
+        },
+      ]}
+      value={filter}
+      onChange={handleSelectChange}
+    />
   );
 };
 

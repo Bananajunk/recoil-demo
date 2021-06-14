@@ -3,6 +3,15 @@ import { useRecoilState } from "recoil";
 
 import { todoListState } from "atoms";
 import * as Types from "types";
+import {
+  Button,
+  Card,
+  Checkbox,
+  Icon,
+  Stack,
+  TextField,
+} from "@shopify/polaris";
+import { DeleteMajor } from "@shopify/polaris-icons";
 
 interface Props {
   item: Types.TodoItem;
@@ -12,10 +21,10 @@ const TodoItem = ({ item }: Props) => {
   const [todoList, setTodoList] = useRecoilState(todoListState);
   const index = todoList.findIndex((listItem) => listItem === item);
 
-  const editItemText = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const editItemText = (value: string) => {
     const newList = replaceItemAtIndex(todoList, index, {
       ...item,
-      text: e.currentTarget.value,
+      text: value,
     });
 
     setTodoList(newList);
@@ -36,15 +45,28 @@ const TodoItem = ({ item }: Props) => {
     setTodoList(newList);
   };
   return (
-    <>
-      <input type="text" value={item.text} onChange={editItemText} />
-      <input
-        type="checkbox"
-        checked={item.isComplete}
-        onChange={toggleItemCompletion}
-      />
-      <button onClick={deleteItem}>X</button>
-    </>
+    <Card sectioned>
+      <Stack alignment="center">
+        <TextField
+          label=""
+          labelHidden
+          value={item.text}
+          onChange={editItemText}
+        />
+        <Checkbox
+          label="Basic checkbox"
+          labelHidden
+          checked={item.isComplete}
+          onChange={toggleItemCompletion}
+        />
+        <Button
+          destructive
+          icon={DeleteMajor}
+          size="slim"
+          onClick={deleteItem}
+        />
+      </Stack>
+    </Card>
   );
 };
 
