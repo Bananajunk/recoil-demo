@@ -10,6 +10,10 @@ const todoListItemWithId = _.memoize((id: string) =>
       id: id,
       text: "",
       isComplete: false,
+      position: {
+        x: 0,
+        y: 0,
+      },
     },
   } as { key: string; default: Types.TodoItem })
 );
