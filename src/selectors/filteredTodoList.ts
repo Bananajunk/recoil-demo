@@ -1,6 +1,6 @@
 import { selector } from "recoil";
 
-import { todoListState, todoListFilterState } from "atoms";
+import { todoListState, todoListFilterState, todoListItemWithId } from "atoms";
 import * as Types from "types";
 
 const filteredTodoList = selector({
@@ -11,9 +11,9 @@ const filteredTodoList = selector({
 
     switch (filter) {
       case Types.TodoListFilter.Completed:
-        return list.filter((item) => item.isComplete);
+        return list.filter((id) => get(todoListItemWithId(id)).isComplete);
       case Types.TodoListFilter.Incomplete:
-        return list.filter((item) => !item.isComplete);
+        return list.filter((id) => !get(todoListItemWithId(id)).isComplete);
       default:
         return list;
     }

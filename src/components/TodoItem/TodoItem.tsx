@@ -1,49 +1,29 @@
 import React from "react";
-import { useRecoilState } from "recoil";
-
-import { todoListState } from "atoms";
-import * as Types from "types";
-import {
-  Button,
-  Card,
-  Checkbox,
-  Icon,
-  Stack,
-  TextField,
-} from "@shopify/polaris";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { Button, Card, Checkbox, Stack, TextField } from "@shopify/polaris";
 import { DeleteMajor } from "@shopify/polaris-icons";
 
+import { todoListItemWithId, todoListState } from "atoms";
 interface Props {
-  item: Types.TodoItem;
+  id: string;
 }
 
-const TodoItem = ({ item }: Props) => {
-  const [todoList, setTodoList] = useRecoilState(todoListState);
-  const index = todoList.findIndex((listItem) => listItem === item);
+const TodoItem = ({ id }: Props) => {
+  const [item, setItem] = useRecoilState(todoListItemWithId(id));
+  const setTodoList = useSetRecoilState(todoListState);
 
   const editItemText = (value: string) => {
-    const newList = replaceItemAtIndex(todoList, index, {
-      ...item,
-      text: value,
-    });
-
-    setTodoList(newList);
+    setItem((item) => ({ ...item, text: value }));
   };
 
   const toggleItemCompletion = () => {
-    const newList = replaceItemAtIndex(todoList, index, {
-      ...item,
-      isComplete: !item.isComplete,
-    });
-
-    setTodoList(newList);
+    setItem((item) => ({ ...item, isComplete: !item.isComplete }));
   };
 
   const deleteItem = () => {
-    const newList = removeItemAtIndex(todoList, index);
-
-    setTodoList(newList);
+    setTodoList((list) => list.filter((listId) => listId !== id));
   };
+
   return (
     <Card sectioned>
       <Stack alignment="center">
@@ -69,20 +49,5 @@ const TodoItem = ({ item }: Props) => {
     </Card>
   );
 };
-
-function replaceItemAtIndex(
-  arr: Types.TodoItem[],
-  index: number,
-  newValue: Types.TodoItem
-): Types.TodoItem[] {
-  return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)];
-}
-
-function removeItemAtIndex(
-  arr: Types.TodoItem[],
-  index: number
-): Types.TodoItem[] {
-  return [...arr.slice(0, index), ...arr.slice(index + 1)];
-}
 
 export default TodoItem;
