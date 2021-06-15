@@ -22,11 +22,11 @@ const TodoList = () => {
     [dragManager.isDragging, updateItemPosition]
   );
 
-  const toggleDragging = useCallback(
+  const stopDragging = useCallback(
     (event: React.MouseEvent) => {
       updateDragManager((dragManager) => ({
         ...dragManager,
-        isDragging: !dragManager.isDragging,
+        isDragging: false,
       }));
       event.stopPropagation();
       event.preventDefault();
@@ -48,7 +48,7 @@ const TodoList = () => {
         <div
           style={{ height: "100vh" }}
           onMouseMove={handleDrag}
-          onMouseUp={toggleDragging}
+          onMouseUp={stopDragging}
         >
           {todoList.map((id) => (
             <TodoItem key={id} id={id} />
