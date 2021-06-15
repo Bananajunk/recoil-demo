@@ -1,43 +1,38 @@
-import React, { useCallback, useEffect } from "react";
-import { useRecoilValue, useRecoilState } from "recoil";
+import React, { useCallback } from "react";
+import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
 import { Card, Layout, Stack } from "@shopify/polaris";
 
 import { dragManagerState } from "atoms";
-import { filteredTodoList } from "selectors";
+import { filteredTodoList, itemPosition } from "selectors";
 import { TodoItem, TodoCreator, TodoListFilters } from "components";
 
 const TodoList = () => {
   const todoList = useRecoilValue(filteredTodoList);
   const [dragManager, updateDragManager] = useRecoilState(dragManagerState);
+  const updateItemPosition = useSetRecoilState(itemPosition);
 
   const handleDrag = useCallback(
-    (event: MouseEvent) => {
+    (event: React.MouseEvent) => {
       if (dragManager.isDragging) {
-        updateDragManager((dragManager) => ({
-          ...dragManager,
-          cursor: { x: event.pageX, y: event.pageY },
-        }));
+        updateItemPosition({ x: event.pageX, y: event.pageY });
       }
+      event.stopPropagation();
+      event.preventDefault();
     },
-    [dragManager.isDragging, updateDragManager]
+    [dragManager.isDragging, updateItemPosition]
   );
 
-  const toggleDragging = useCallback(() => {
-    updateDragManager((dragManager) => ({
-      ...dragManager,
-      isDragging: !dragManager.isDragging,
-    }));
-  }, [updateDragManager]);
-
-  useEffect(() => {
-    if (dragManager.isDragging) {
-      document.addEventListener("mousemove", handleDrag);
-      document.addEventListener("mouseup", toggleDragging);
-    } else {
-      document.removeEventListener("mousemove", handleDrag);
-      document.removeEventListener("mouseup", toggleDragging);
-    }
-  }, [dragManager.isDragging, handleDrag, toggleDragging]);
+  const toggleDragging = useCallback(
+    (event: React.MouseEvent) => {
+      updateDragManager((dragManager) => ({
+        ...dragManager,
+        isDragging: !dragManager.isDragging,
+      }));
+      event.stopPropagation();
+      event.preventDefault();
+    },
+    [updateDragManager]
+  );
 
   return (
     <Layout>
@@ -50,9 +45,15 @@ const TodoList = () => {
         </Card>
       </Layout.Section>
       <Layout.Section>
-        {todoList.map((id) => (
-          <TodoItem key={id} id={id} />
-        ))}
+        <div
+          style={{ height: "100vh" }}
+          onMouseMove={handleDrag}
+          onMouseUp={toggleDragging}
+        >
+          {todoList.map((id) => (
+            <TodoItem key={id} id={id} />
+          ))}
+        </div>
       </Layout.Section>
     </Layout>
   );

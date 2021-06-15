@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import React from "react";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { Button, Card, Checkbox, Stack, TextField } from "@shopify/polaris";
 import { DeleteMajor } from "@shopify/polaris-icons";
 
 import { todoListItemWithId, todoListState, dragManagerState } from "atoms";
-import { itemPosition } from "selectors";
 
 import "./TodoItem.scss";
 interface Props {
@@ -13,15 +12,8 @@ interface Props {
 
 const TodoItem = ({ id }: Props) => {
   const [item, setItem] = useRecoilState(todoListItemWithId(id));
-  const [dragManager, updateDragManager] = useRecoilState(dragManagerState);
+  const updateDragManager = useSetRecoilState(dragManagerState);
   const setTodoList = useSetRecoilState(todoListState);
-  const position = useRecoilValue(itemPosition);
-
-  useEffect(() => {
-    if (dragManager.isDragging && dragManager.itemId === id) {
-      setItem((item) => ({ ...item, position }));
-    }
-  }, [dragManager.isDragging, dragManager.itemId, id, position, setItem]);
 
   const editItemText = (value: string) => {
     setItem((item) => ({ ...item, text: value }));
